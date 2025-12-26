@@ -1,0 +1,60 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.0.1'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id "org.openapi.generator" version "7.17.0"
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+description = 'todo-api'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.21'
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+tasks.register("buildApiDoc", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName.set("html2")
+	inputSpec.set("$rootDir/src/main/resources/api-schema.yaml")
+	outputDir.set("$buildDir/apiDoc")
+}
+
+tasks.register("buildSpringServer", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName.set("spring")
+	inputSpec.set("$rootDir/src/main/resources/api-schema.yaml")
+	outputDir.set("$buildDir/spring".toString())
+	apiPackage.set("com.example.todoApi.controller")
+	modelPackage.set("com.example.todoApi.controller")
+	configOptions.set([
+		interfaceOnly: "true",
+		useSpringBoot3: "true"
+	])
+}
+
+compileJava.dependsOn(
+		tasks.buildSpringServer
+)
+
+sourceSets {
+	main.java.srcDir("$buildDir/spring/src/main/java")
+}
