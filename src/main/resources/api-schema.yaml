@@ -36,7 +36,7 @@ paths:
           schema:
             type: integer
             format: int64
-          description: 検索対象のステータス
+          description: 検索対象のステータス（0：未完了、1：完了済み）
       responses:
         '200':
           description: OK
@@ -77,11 +77,11 @@ components:
         status:
           type: integer
           format: int64
-          description: タスクのステータス
+          description: タスクのステータス（0：未完了、1：完了済み）
         emphasisFlg:
           type: integer
           format: int64
-          description: タスクの強調表示制御用フラグ
+          description: タスクの強調表示制御用フラグ（0：強調無し、1：太字）
       required:
         - id
         - userId
