@@ -4,8 +4,97 @@ info:
   version: "0.0.1"
   description: TODO API のドキュメントです。
 paths:
-  /health:
+  /todo/health:
     get:
+      operationId: healthGet
       responses:
         '200':
           description: OK
+  /todo/tasks/1:
+    get:
+      operationId: showTask
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskDTO"
+  /search:
+    get:
+      operationId: searchTodoList
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 検索対象のユーザID
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          description: 検索対象のステータス
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TodoListResponseDTO"
+
+
+components:
+  schemas:
+    TaskDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: タスクID
+        title:
+          type: string
+          description: タスクのタイトル
+      required:
+        - id
+        - title
+    TodoDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: タスクID
+        userId:
+          type: string
+          description: ユーザID
+        title:
+          type: string
+          description: タスクのタイトル
+        status:
+          type: integer
+          format: int64
+          description: タスクのステータス
+        emphasisFlg:
+          type: integer
+          format: int64
+          description: タスクの強調表示制御用フラグ
+      required:
+        - id
+        - userId
+        - title
+        - status
+        - emphasisFlg
+    TodoListResponseDTO:
+      type: object
+      properties:
+        todos:
+          type: array
+          items:
+            $ref: '#/components/schemas/TodoDTO'
+          description: タスクのリスト
+      required:
+        - todos

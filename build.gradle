@@ -20,12 +20,19 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-h2console'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.0'
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+  	runtimeOnly 'com.h2database:h2'
 	implementation 'io.swagger.core.v3:swagger-annotations:2.2.21'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	// testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:4.0.0'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -43,11 +50,25 @@ tasks.register("buildSpringServer", org.openapitools.generator.gradle.plugin.tas
 	generatorName.set("spring")
 	inputSpec.set("$rootDir/src/main/resources/api-schema.yaml")
 	outputDir.set("$buildDir/spring".toString())
-	apiPackage.set("com.example.todoApi.controller")
-	modelPackage.set("com.example.todoApi.controller")
+	apiPackage.set("com.example.todoApi.api")
+	modelPackage.set("com.example.todoApi.model")
+
 	configOptions.set([
-		interfaceOnly: "true",
-		useSpringBoot3: "true"
+		interfaceOnly : "true",
+		useSpringBoot3 : "true",
+		apiNameSuffix : "Api"
+	])
+}
+
+tasks.register("buildApiModel", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName.set("java")
+	inputSpec.set("$rootDir/src/main/resources/api-schema.yaml")
+	outputDir.set("$buildDir/spring".toString())
+	modelPackage.set("com.example.todoApi.record")
+
+	configOptions.set([
+			useRecords: "true",
+			usePrimitiveTypes: "true"
 	])
 }
 
