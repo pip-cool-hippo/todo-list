@@ -1,0 +1,16 @@
+CREATE TABLE samples(
+    id BIGINT not NULL PRIMARY KEY AUTO_INCREMENT,
+    content VARCHAR(256) NOT NULL
+);
+
+CREATE TABLE tasks(
+    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    user_id VARCHAR(256) NOT NULL,
+    title VARCHAR(256) NOT NULL,
+    status BIGINT NOT NULL,
+    emphasis_flg BIGINT,
+    --     genre INT,   ジャンルは後々追加予定
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE(user_id, title)
+);
